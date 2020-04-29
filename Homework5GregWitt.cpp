@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <queue>
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -10,19 +11,54 @@ class Vertex
 {
 public:
     bool known;
-    int vNum;
+    int id;
     int parent;
     vector<int> neighbors;
     int pathCost;
 
     // Defaiult Const
-    Vertex(int vNum)
+    Vertex(int valueNum)
     {
-        vNum = vNum;
+        id = valueNum;
         known = false;
+        vector<int> neighbors;
         parent = 0;
+        pathCost = 1;
     }
 };
+
+void printPath()
+{
+}
+
+void shortestPath()
+{
+    // dijkstra's Shortest Algorithm
+    // q.enqueue(v_start)
+
+    //     while (!q.isEmpty())
+    // {
+
+    //     v = q.dequeue();
+
+    // for
+    //     each w adjacent to v
+    //     {
+
+    //         if (w is unknown)
+    //         {
+
+    //             w.cost = v.cost + 1
+
+    //                               w.known = true
+
+    //                                         w.parent = v
+
+    //                                                        q.enqueue(w);
+    //         }
+    //     }
+    // }
+}
 
 int main()
 {
@@ -45,8 +81,7 @@ int main()
 
         while (getline(mazefile, line))
         {
-
-            cout << line << endl;
+            // cout << line << endl;
             stringstream readLine(line);
 
             // pipe the value
@@ -56,36 +91,33 @@ int main()
             cout << "Creating Node Value... " << NodeValue << endl;
 
             Vertex Edges(NodeValue);
+
             while (getline(readLine, line))
             {
-
                 int neighborValue;
-                neighborValue = stoi(line);
                 cout << "Checking For Neighbors... " << endl;
-                if (neighborValue != -1)
+
+                neighborValue = stoi(line);
+
+                cout << "Found Neighbor " << neighborValue << endl;
+
+                (string) line;
+                stringstream neighborHood(line);
+
+                neighborHood >> line;
+                // cout << line << endl;
+                while (neighborHood >> line)
                 {
-                    cout << "Found Neighbor " << neighborValue << endl;
-                    (string) line;
-                    stringstream neighborHood(line);
-                    while (getline(neighborHood, line))
+                    cout << "Checking for additional neighbors" << endl;
+                    // cout << line << endl;
+                    int end = stoi(line);
+
+                    if (end == -1)
                     {
-                        cout << "Reading Again: " << endl;
-                        while (getline(readLine, line))
-                        {
-                            cout << "Checking for additional neighbors" << endl;
-                            int endOfLine;
-                            endOfLine = stoi(line);
-                            if (endOfLine == -1)
-                            {
-                                cout << "Nothing was found.. DEAD END.... " << endl;
-                            }
-                        }
+                        cout << "Nothing was found.. DEAD END.... " << endl;
+                        break;
                     }
-                }
-                else
-                {
-                    cout << "None Found" << endl;
-                    break;
+                    Edges.neighbors.push_back(end);
                 }
             }
         }
