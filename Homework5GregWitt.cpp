@@ -16,7 +16,6 @@ public:
     vector<int> neighbors;
     int pathCost;
 
-    // Defaiult Const
     Vertex(int valueNum)
     {
         id = valueNum;
@@ -27,51 +26,76 @@ public:
     }
 };
 
+//  This will Print the Maze as it is Currently not solved
 void printPath(vector<Vertex> elements)
 {
+    cout << "===========================" << endl;
     for (int i = 0; i < elements.size(); i++)
     {
-        cout << elements[i].id << " -> ";
+        // Starting at End of Path
+        cout << (elements[i].parent + 1) << " -> ";
+    }
+    cout << "END " << endl;
+    cout << "===========================" << endl;
+}
+
+void printPathSolved(vector<Vertex> elements)
+{
+    //  Runs the Path in reverse.
+    for (int i = 99; i >= 0; i = elements.at(i).parent - 1)
+    {
+        // Starting at End of Path
+        cout << (elements[i].id) << " -> ";
     }
     cout << "END ";
 }
 
-void shortestPath()
+void printShortestPathValue(vector<Vertex> pathElements)
+{
+    cout << "===========================" << endl;
+    cout << "Calculated Shortest Path: " << pathElements.back().pathCost << endl;
+    cout << "===========================" << endl;
+}
+
+vector<Vertex> shortestPath(vector<Vertex> pathElements)
 {
     // dijkstra's Shortest Algorithm
-    // q.enqueue(v_start)
+    // cout << firstElement.id << endl;
+    queue<Vertex> holder;
+    holder.push(pathElements[0]);
 
-    //     while (!q.isEmpty())
-    // {
+    while (!holder.empty())
+    {
+        Vertex v = holder.front();
+        holder.pop();
 
-    //     v = q.dequeue();
+        for (int i = 0; i < v.neighbors.size(); i++)
+        {
 
-    // for
-    //     each w adjacent to v
-    //     {
-
-    //         if (w is unknown)
-    //         {
-
-    //             w.cost = v.cost + 1
-
-    //                               w.known = true
-
-    //                                         w.parent = v
-
-    //                                                        q.enqueue(w);
-    //         }
-    //     }
-    // }
+            if (pathElements.at(v.neighbors[i]).known == false)
+            {
+                pathElements.at(v.neighbors[i]).pathCost = v.pathCost + 1;
+                // cout << "Print Parent attributes :" << endl;
+                // cout << w.parent << endl;
+                // cout << v.id << endl;
+                pathElements.at(v.neighbors[i]).parent = v.id;
+                pathElements.at(v.neighbors[i]).known = true;
+                holder.push(pathElements.at(v.neighbors[i]));
+            }
+        }
+    }
+    return pathElements;
 }
 
 int main()
 {
+    // Vector Holder
+    vector<Vertex> PathElements;
     // Test Filestream inputs
     fstream mazefile;
     // Open the file
 
-    mazefile.open("test-maze.txt", std::ios::in);
+    mazefile.open("maze.txt", std::ios::in);
 
     if (!mazefile)
     {
@@ -84,9 +108,6 @@ int main()
         cout << "=============================" << endl;
         string line;
 
-        // Vector Holder
-        vector<Vertex> PathElements;
-
         while (getline(mazefile, line))
         {
             // cout << line << endl;
@@ -94,44 +115,54 @@ int main()
 
             // pipe the value
             int NodeValue;
+            // Stores into
             readLine >> NodeValue;
 
             cout << "Creating Node Value... " << NodeValue << endl;
 
             Vertex Edge(NodeValue);
 
-            while (getline(readLine, line))
+            while (readLine >> NodeValue)
             {
-                int neighborValue;
-                cout << "Checking For Neighbors... " << endl;
 
-                neighborValue = stoi(line);
-
-                cout << "Found Neighbor " << neighborValue << endl;
-
-                (string) line;
-                stringstream neighborHood(line);
-
-                neighborHood >> line;
-                // cout << line << endl;
-                while (neighborHood >> line)
+                cout << "Looking for Path Neighbors" << endl;
+                if (NodeValue != -1)
                 {
-                    cout << "Checking for additional neighbors" << endl;
-                    // cout << line << endl;
-                    int end = stoi(line);
-
-                    if (end == -1)
-                    {
-                        cout << "Nothing was found.. DEAD END.... " << endl;
-                        break;
-                    }
-                    Edge.neighbors.push_back(end);
+                    cout << "Adding Path Options" << endl;
+                    Edge.neighbors.push_back(NodeValue - 1);
                 }
-                cout << "Current Vertex:" << endl;
-                // Path Collection for Elements in the Path
-                PathElements.push_back(Edge);
+                else
+                {
+                    cout << "Nothing was found.. DEAD END.... " << endl;
+                    break;
+                }
             }
+
+            // cout << "Current Vertex:" << endl;
+            // Path Collection for Elements in the Path
+
+            PathElements.push_back(Edge);
+
+            //  TEST
+            // id Node Check:
+            // for (int i = 0; i < PathElements.size(); i++)
+            // {
+            //     cout << PathElements.at(i).id << endl;
+            // }
         }
-        printPath(PathElements);
     }
+
+    PathElements = shortestPath(PathElements);
+    cout << "Completed Path: " << endl;
+    printPath(PathElements);
+
+    printShortestPathValue(PathElements);
+    // id Node Check:
+    // for (int i = 0; i < PathElements.size(); i++)
+    // {
+    //     cout << PathElements.at(i).id << " " << PathElements.at(i).parent << endl;
+    // }
+    cout << "Shortest Path: " << endl;
+    cout << "===========================" << endl;
+    printPathSolved(PathElements);
 }
