@@ -27,8 +27,13 @@ public:
     }
 };
 
-void printPath()
+void printPath(vector<Vertex> elements)
 {
+    for (int i = 0; i < elements.size(); i++)
+    {
+        cout << elements[i].id << " -> ";
+    }
+    cout << "END ";
 }
 
 void shortestPath()
@@ -66,7 +71,7 @@ int main()
     fstream mazefile;
     // Open the file
 
-    mazefile.open("test-maze.txt", std::ios::in);
+    mazefile.open("maze.txt", std::ios::in);
 
     if (!mazefile)
     {
@@ -78,6 +83,8 @@ int main()
         cout << "Sucessfully Found Maze file:" << endl;
         cout << "=============================" << endl;
         string line;
+        // Vector Holder
+        vector<Vertex> PathElements;
 
         while (getline(mazefile, line))
         {
@@ -90,7 +97,7 @@ int main()
 
             cout << "Creating Node Value... " << NodeValue << endl;
 
-            Vertex Edges(NodeValue);
+            Vertex Edge(NodeValue);
 
             while (getline(readLine, line))
             {
@@ -117,9 +124,13 @@ int main()
                         cout << "Nothing was found.. DEAD END.... " << endl;
                         break;
                     }
-                    Edges.neighbors.push_back(end);
+                    Edge.neighbors.push_back(end);
                 }
+                cout << "Current Vertex:" << endl;
+                // Path Collection for Elements in the Path
+                PathElements.push_back(Edge);
             }
         }
+        printPath(PathElements);
     }
 }
