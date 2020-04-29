@@ -71,7 +71,7 @@ int main()
     fstream mazefile;
     // Open the file
 
-    mazefile.open("maze.txt", std::ios::in);
+    mazefile.open("test-maze.txt", std::ios::in);
 
     if (!mazefile)
     {
@@ -83,6 +83,7 @@ int main()
         cout << "Sucessfully Found Maze file:" << endl;
         cout << "=============================" << endl;
         string line;
+
         // Vector Holder
         vector<Vertex> PathElements;
 
